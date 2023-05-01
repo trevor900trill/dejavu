@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Inventory Management System - Records</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>DEJAVU Table</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.0/css/bootstrap.min.css"
+    />
+    <style>
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+      }
+      
+      footer {
+        height: 50px;
+        background-color: #333;
+        color: #fff;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .wrapper {
+        min-height: calc(100% - 70px - 66px);
+        position: relative;
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <a class="navbar-brand" href="#">DEJAVU</a>
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-toggle="collapse"
+        data-target="#navbarNav"
+        aria-controls="navbarNav"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link" href="index.html">Add Entry</a>
+          </li>
+          <li class="nav-item active">
+            <a class="nav-link" href="#">List Entries</a>
+            <span class="sr-only">(current)</span>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <div class="container wrapper mt-3">
+      <h2>Records</h2>
+      <table class="table" id="records-table">
+        <thead>
+          <tr>
+            <th>Date Created</th>
+            <th>Username</th>
+            <th>Product Name</th>
+            <th>Current Quantity</th>
+            <th>Transfer Quantity</th>
+            <th>Department Name</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+    <div
+      class="modal fade"
+      id="responseModal"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="responseModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="responseModalLabel">
+              Response Message
+            </h5>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <p id="response-message"></p>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-dismiss="modal"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer class="mt-4">
+      <p>&copy; 2023 DEJAVU. All rights reserved.</p>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.0/js/bootstrap.min.js"></script>
+
+    <script>
+      $(() => {
+        $.ajax({
+          url: 'https://dejavutechkenya.com/dejavuurls/dejavurecs.php',
+          type: 'GET',
+          dataType: 'json',
+          success: async (response) => {
+            console.log(response)
+            var records = response.body
+            for (var i = 0; i < records.length; i++) {
+              var record = records[i]
+              var tr = $('<tr>')
+              tr.append($('<td>').text(record.date_created))
+              tr.append($('<td>').text(record.username))
+              tr.append($('<td>').text(record.product))
+              tr.append($('<td>').text(record.current_quantity))
+              tr.append($('<td>').text(record.transfered_qty))
+              tr.append($('<td>').text(record.department))
+              $('#records-table tbody').append(tr)
+            }
+          },
+          error: function (xhr, status, error) {
+            $('#response-message').text('Error: ' + error)
+            $('#responseModal').modal('show')
+          },
+        })
+      })
+    </script>
+  </body>
+</html>

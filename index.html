@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Inventory Transfer Form</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.0/css/bootstrap.min.css"
+    />
+    <style>
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+      }
+
+      footer {
+        height: 50px;
+        background-color: #333;
+        color: #fff;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .wrapper {
+        min-height: calc(100% - 70px - 66px);
+        position: relative;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="#">DEJAVU</a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-toggle="collapse"
+          data-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav">
+            <li class="nav-item active">
+              <a class="nav-link" href="#">
+                Add Entry
+                <span class="sr-only">(current)</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="table.html">List Entries</a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+    </header>
+
+    <div class="container wrapper mt-4">
+      <h2>Inventory Transfer Form</h2>
+      <form id="inventory-form">
+        <div class="form-group">
+          <label for="date_created">Date Created:</label>
+          <input
+            type="date"
+            class="form-control"
+            id="date_created"
+            name="date_created"
+            required
+          />
+        </div>
+        <div class="form-group">
+          <label for="username">Username:</label>
+          <input
+            type="text"
+            class="form-control"
+            id="username"
+            name="username"
+            required
+          />
+        </div>
+        <div class="form-group">
+          <label for="product_name">Product Name:</label>
+          <input
+            type="text"
+            class="form-control"
+            id="product_name"
+            name="product_name"
+            required
+          />
+        </div>
+        <div class="form-group">
+          <label for="current_quantity">Current Quantity:</label>
+          <input
+            type="number"
+            class="form-control"
+            id="current_quantity"
+            name="current_quantity"
+            required
+          />
+        </div>
+        <div class="form-group">
+          <label for="transfer_quantity">Transfer Quantity:</label>
+          <input
+            type="number"
+            class="form-control"
+            id="transfer_quantity"
+            name="transfer_quantity"
+            required
+          />
+        </div>
+        <div class="form-group">
+          <label for="department_name">Department Name:</label>
+          <input
+            type="text"
+            class="form-control"
+            id="department_name"
+            name="department_name"
+            required
+          />
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+      </form>
+    </div>
+
+    <footer class="mt-4">
+      <p>&copy; 2023 DEJAVU. All rights reserved.</p>
+    </footer>
+
+    <div
+      class="modal fade"
+      id="responseModal"
+      tabindex="-1"
+      role="dialog"
+      aria
+      -labelledby="responseModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="responseModalLabel">Server Response</h5>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">×</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <p id="response-message"></p>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-dismiss="modal"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.0/js/bootstrap.min.js"></script>
+
+    <script>
+      $(() => {
+        $('#inventory-form').on('submit', async (e) => {
+          e.preventDefault()
+          if (validateForm()) {
+            $.ajax({
+              url: 'https://dejavutechkenya.com/dejavuurls/dejavuurls.php',
+              type: 'POST',
+              data: JSON.stringify({
+                date_created: $('#date_created').val(),
+                username: $('#username').val(),
+                product_name: $('#product_name').val(),
+                current_quantity: $('#current_quantity').val(),
+                transfer_quantity: $('#transfer_quantity').val(),
+                department_name: $('#department_name').val(),
+              }),
+              dataType: 'text',
+              success: (response) => {
+                $('#response-message').text('Success')
+                $('#responseModal').modal('show')
+              },
+              error: (jqXHR, textStatus, errorThrown) => {
+                console.log(errorThrown)
+                $('#response-message').text(
+                  'An error occurred while processing your request.',
+                )
+                $('#responseModal').modal('show')
+              },
+            })
+          }
+        })
+
+        var validateForm = () => {
+          var date_created = $('#date_created').val()
+          var username = $('#username').val()
+          var product_name = $('#product_name').val()
+          var current_quantity = $('#current_quantity').val()
+          var transfer_quantity = $('#transfer_quantity').val()
+          var department_name = $('#department_name').val()
+
+          if (
+            date_created == '' ||
+            username == '' ||
+            product_name == '' ||
+            current_quantity == '' ||
+            transfer_quantity == '' ||
+            department_name == ''
+          ) {
+            $('#response-message').text('Please fill in all required fields.')
+            $('#responseModal').modal('show')
+            return false
+          }
+
+          if (current_quantity < transfer_quantity) {
+            $('#response-message').text(
+              'The transfer quantity cannot be greater than the current quantity.',
+            )
+            $('#responseModal').modal('show')
+            return false
+          }
+
+          return true
+        }
+      })
+    </script>
+  </body>
+</html>
