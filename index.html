@@ -104,12 +104,12 @@
           />
         </div>
         <div class="form-group">
-          <label for="transfer_quantity">Transfer Quantity:</label>
+          <label for="tranfer_quantity">Transfer Quantity:</label>
           <input
             type="number"
             class="form-control"
-            id="transfer_quantity"
-            name="transfer_quantity"
+            id="tranfer_quantity"
+            name="tranfer_quantity"
             required
           />
         </div>
@@ -179,23 +179,16 @@
             $.ajax({
               url: 'https://dejavutechkenya.com/dejavuurls/dejavuurls.php',
               type: 'POST',
-              data: JSON.stringify({
-                date_created: $('#date_created').val(),
-                username: $('#username').val(),
-                product_name: $('#product_name').val(),
-                current_quantity: $('#current_quantity').val(),
-                transfer_quantity: $('#transfer_quantity').val(),
-                department_name: $('#department_name').val(),
-              }),
+              data: $('#inventory-form').serialize(), // serialize the form data
               dataType: 'text',
               success: (response) => {
                 $('#response-message').text('Success')
                 $('#responseModal').modal('show')
               },
               error: (jqXHR, textStatus, errorThrown) => {
-                console.log(errorThrown)
+                console.log(jqXHR)
                 $('#response-message').text(
-                  'An error occurred while processing your request.',
+                  'Response code ' + jqXHR.status + ' ' + jqXHR.responseText,
                 )
                 $('#responseModal').modal('show')
               },
@@ -226,7 +219,7 @@
 
           if (current_quantity < transfer_quantity) {
             $('#response-message').text(
-              'The transfer quantity cannot be greater than the current quantity.',
+              'The current quantity cannot be lesser than the transfer quantity.',
             )
             $('#responseModal').modal('show')
             return false
