@@ -201,7 +201,7 @@
           var username = $('#username').val()
           var product_name = $('#product_name').val()
           var current_quantity = $('#current_quantity').val()
-          var transfer_quantity = $('#transfer_quantity').val()
+          var transfer_quantity = $('#tranfer_quantity').val()
           var department_name = $('#department_name').val()
 
           if (
@@ -217,7 +217,7 @@
             return false
           }
 
-          if (current_quantity < transfer_quantity) {
+          if (transfer_quantity > current_quantity) {
             $('#response-message').text(
               'The current quantity cannot be lesser than the transfer quantity.',
             )
@@ -225,7 +225,7 @@
             return false
           }
 
-          return true
+          return false
         }
       })
     </script>
